@@ -20,6 +20,10 @@ type Mutation {
   updateComment(id: ID!, data: UpdateCommentInput!): Comment!
 }
 
+type Subscription {
+  count: Int!
+}
+
 # input typeの中身は全てscalar
 input CreateUserInput {
   name: String!
