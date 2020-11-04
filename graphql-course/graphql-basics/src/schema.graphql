@@ -21,8 +21,8 @@ type Mutation {
 }
 
 type Subscription {
-  count: Int!
   comment(postId: ID!): Comment!
+  post: Post!
 }
 
 # input typeの中身は全てscalar
