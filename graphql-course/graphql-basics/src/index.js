@@ -50,18 +50,22 @@ const comments = [
   {
     id: '102',
     text: 'This worked well for me. Thanks!',
+    author: '3',
   },
   {
     id: '103',
     text: 'Glad you enjoyed it.',
+    author: '1',
   },
   {
     id: '104',
     text: 'this did no work.',
+    author: '2',
   },
   {
     id: '105',
     text: 'Nervermind. I got it to work.',
+    author: '1',
   },
 ]
 
@@ -81,6 +85,7 @@ const typeDefs = `
     email: String!
     age: Int
     posts: [Post!]!
+    comments: [Comment!]!
   }
 
   type Post {
@@ -94,6 +99,7 @@ const typeDefs = `
   type Comment {
     id: ID!
     text: String!
+    author: User!
   }
 `
 
@@ -145,6 +151,11 @@ const resolvers = {
     posts(parent, args, ctx, info) {
       return posts.filter((post) => post.author === parent.id)
     },
+    comments(parent, args, ctx, info) {
+      return comments.filter((comment) => {
+        return comment.author === parent.id
+      })
+    },
   },
   Post: {
     // post infoがparentに格納されている
@@ -152,6 +163,11 @@ const resolvers = {
       return users.find((user) => {
         return user.id === parent.author
       })
+    },
+  },
+  Comment: {
+    author(parent, args, ctx, info) {
+      return users.find((user) => user.id === parent.author)
     },
   },
 }
