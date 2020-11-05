@@ -85,12 +85,28 @@ type Comment {
   post: Post!
 }
 
+# Enum
+# 1. a specia ltype that defines a set of constants.
+# 2. this type can then be used as the type for a field (similar to scalar and custom object types).
+# 3. values for the field must be one of the constants for the type
+# Enum ex.
+# UserRole - standard, editor, admin
+# type User { role: UserRole! }
+# laptop.isOn - true - false
+# laptop.powerStatus - on - off - sleep
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
 type PostSubscriptionPayload {
-  mutation: String!
+  mutation: MutationType!
   data: Post!
 }
 
 type CommentSubscriptionPayload {
-  mutation: String!
+  mutation: MutationType!
   data: Comment!
 }
