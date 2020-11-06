@@ -1,0 +1,112 @@
+# type definitions (schema)
+type Query {
+  users(query: String): [User!]!
+  posts(query: String): [Post!]!
+  comments: [Comment!]!
+  me: User!
+  post: Post!
+}
+
+type Mutation {
+  # 引数にcustom typeは不可、input typeはおｋ
+  createUser(data: CreateUserInput!): User!
+  deleteUser(id: ID!): User!
+  updateUser(id: ID!, data: UpdateUserInput!): User!
+  createPost(data: CreatePostInput!): Post!
+  deletePost(id: ID!): Post!
+  updatePost(id: ID!, data: UpdatePostInput): Post!
+  createComment(data: CreateCommentInput!): Comment!
+  deleteComment(id: ID!): Comment!
+  updateComment(id: ID!, data: UpdateCommentInput!): Comment!
+}
+
+type Subscription {
+  comment(postId: ID!): CommentSubscriptionPayload!
+  post: PostSubscriptionPayload!
+}
+
+# input typeの中身は全てscalar
+input CreateUserInput {
+  name: String!
+  email: String!
+  age: Int
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  age: Int
+}
+
+input CreatePostInput {
+  title: String!
+  body: String!
+  published: Boolean!
+  author: ID!
+}
+input UpdatePostInput {
+  title: String
+  body: String
+  published: Boolean
+}
+
+input CreateCommentInput {
+  text: String!
+  author: ID!
+  post: ID!
+}
+
+input UpdateCommentInput {
+  text: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  age: Int
+  posts: [Post!]!
+  comments: [Comment!]!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  body: String!
+  published: Boolean!
+  author: User!
+  comments: [Comment]!
+}
+
+type Comment {
+  id: ID!
+  text: String!
+  author: User!
+  post: Post!
+}
+
+# Enum
+# 1. a specia ltype that defines a set of constants.
+# 2. this type can then be used as the type for a field (similar to scalar and custom object types).
+# 3. values for the field must be one of the constants for the type
+# Enum ex.
+# UserRole - standard, editor, admin
+# type User { role: UserRole! }
+# laptop.isOn - true - false
+# laptop.powerStatus - on - off - sleep
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+type PostSubscriptionPayload {
+  mutation: MutationType!
+  data: Post!
+}
+
+type CommentSubscriptionPayload {
+  mutation: MutationType!
+  data: Comment!
+}
