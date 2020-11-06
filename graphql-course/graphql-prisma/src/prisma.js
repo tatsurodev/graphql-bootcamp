@@ -21,7 +21,9 @@ prisma.query.comments(null, '{ id text author { id name } }').then((data) => {
 })
 */
 
-prisma.mutation
+/* mutation
+// then catch version
+prisma.mutation 
   .createPost(
     {
       data: {
@@ -44,7 +46,42 @@ prisma.mutation
   .then((data) => {
     console.log(JSON.stringify(data, undefined, 2))
   })
+*/
+// async await version
+const createPostForUser = async (authorId, data) => {
+  const post = await prisma.mutation.createPost(
+    {
+      data: {
+        ...data,
+        author: {
+          connect: {
+            id: authorId,
+          },
+        },
+      },
+    },
+    '{ id }'
+  )
+  const user = await prisma.query.user(
+    {
+      where: {
+        id: authorId,
+      },
+    },
+    '{ id name email posts { id title published } }'
+  )
+  return user
+}
+createPostForUser('ckh61gfgt000q0815djk0rpo2', {
+  title: 'Great books to read',
+  body: 'The war of Art',
+  published: true,
+}).then((user) => {
+  console.log(JSON.stringify(user, undefined, 2))
+})
 
+/*
+// then catch version
 prisma.mutation
   .updatePost(
     {
@@ -64,3 +101,29 @@ prisma.mutation
   .then((data) => {
     console.log(data)
   })
+*/
+// async await version
+const updatePostForUser = async (postId, data) => {
+  const post = await prisma.mutation.updatePost(
+    {
+      where: {
+        id: postId,
+      },
+      data,
+    },
+    '{ author { id } }'
+  )
+  console.log(post)
+  const user = await prisma.query.user(
+    {
+      where: {
+        id: post.author.id,
+      },
+    },
+    '{ id name email posts { id title published } }'
+  )
+  return user
+}
+updatePostForUser('ckh6imc1g057o0815topbdhtq', {
+  published: false,
+}).then((user) => console.log(JSON.stringify(user, undefined, 2)))
